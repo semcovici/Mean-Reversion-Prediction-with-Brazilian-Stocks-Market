@@ -19,11 +19,14 @@ if __name__ == '__main__':
         group_by="ticker"
         )
 
+    data.dropna(inplace=True)
+    
     # save files 
     for ativo in list_ativos:
         
         price_hist =  data[ativo]
         
         ativo = ativo.replace('.', '_')
-        
+                
         price_hist.to_excel(path_price_history.format(ativo = ativo))
+        
