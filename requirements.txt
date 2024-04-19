@@ -4,3 +4,5 @@ plotly==5.21.0
 numpy==1.26.4
 pandas==2.2.2
 seaborn==0.13.2
+tqdm==4.66.2
+nbformat==5.10.4
