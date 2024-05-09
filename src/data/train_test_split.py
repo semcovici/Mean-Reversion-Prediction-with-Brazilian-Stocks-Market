@@ -21,20 +21,10 @@ train_size = 0.3
 
 n_prev_meta = 10
 
+from data_split import temporal_train_test_split
 
-def temporal_train_test_split(
-    df,
-    index_col = "Date",
-    train_size = 0.8
-):
-    
-    df.sort_values(index_col, inplace = True)
-    df.reset_index(drop=True, inplace = True)
-    
-    idx_split = int(len(df) * train_size)
 
-    #return train, test
-    return df[:idx_split], df[idx_split:]
+
 
 
 def main():
