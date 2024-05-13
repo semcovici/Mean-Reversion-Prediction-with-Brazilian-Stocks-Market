@@ -33,17 +33,17 @@ def main():
             # dependent
             ######################
             
-            # # create for full dataset
-            # cont_tbl = create_contigency_table(data,n_prev_meta, progress_bar=False)
+            # create for full dataset
+            cont_tbl = create_contigency_table(data,n_prev_meta, progress_bar=False)
             
-            # cont_tbl.to_csv(path_data_dir + f"processed/contingency_table_price_history_{asset.replace('.', '_')}_meta_range({n_prev_meta})_dataset_ffill.csv")
+            cont_tbl.to_csv(path_data_dir + f"processed/contingency_table_price_history_{asset.replace('.', '_')}_meta_range({n_prev_meta})_dataset_ffill.csv")
             
-            # # create for train test
-            # cont_tbl_train = create_contigency_table(train,n_prev_meta, progress_bar=False)
-            # cont_tbl_test = create_contigency_table(test,n_prev_meta, progress_bar=False)
+            # create for train test
+            cont_tbl_train = create_contigency_table(train,n_prev_meta, progress_bar=False)
+            cont_tbl_test = create_contigency_table(test,n_prev_meta, progress_bar=False)
             
-            # cont_tbl_train.to_csv(path_data_dir + f"processed/train_contingency_table_price_history_{asset.replace('.', '_')}_meta_range({n_prev_meta})_dataset_ffill.csv")
-            # cont_tbl_test.to_csv(path_data_dir + f"processed/test_contingency_table_price_history_{asset.replace('.', '_')}_meta_range({n_prev_meta})_dataset_ffill.csv")
+            cont_tbl_train.to_csv(path_data_dir + f"processed/train_contingency_table_price_history_{asset.replace('.', '_')}_meta_range({n_prev_meta})_dataset_ffill.csv")
+            cont_tbl_test.to_csv(path_data_dir + f"processed/test_contingency_table_price_history_{asset.replace('.', '_')}_meta_range({n_prev_meta})_dataset_ffill.csv")
 
 
             ######################
