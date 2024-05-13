@@ -2,8 +2,8 @@ import yfinance as yahooFinance
 
 
 list_ativos =["PETR3.SA","PRIO3.SA", "VALE3.SA", "GGBR3.SA", "ABCB4.SA", "ITUB3.SA", "FLRY3.SA", "RADL3.SA"]
-start_dt="1910-01-01" 
-end_dt="2100-12-31"
+start_dt="2010-11-24" 
+end_dt="2024-03-01"
 
 path_price_history = 'data/raw/price_history_{ativo}.xlsx'
 
