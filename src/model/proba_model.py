@@ -8,6 +8,8 @@ def get_past_meta(
         
     list_past_meta = df.loc[idx-n_past_meta:idx - 1, name_meta_col].to_list()
     
+    list_past_meta.reverse()
+    
     if len(list_past_meta) == 1:
         return str(list_past_meta[0])
         
