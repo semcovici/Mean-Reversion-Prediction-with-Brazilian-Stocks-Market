@@ -1,3 +1,7 @@
+mkdir -p data/raw
+
+mkdir -p data/processed
+
 python src/data/get_data_yfinance.py
 
 python src/features/create_table_meta.py
