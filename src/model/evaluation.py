@@ -7,4 +7,14 @@ def get_classification_report(y_test, y_pred):
     df_classification_report = pd.DataFrame(report).transpose()
     df_classification_report = df_classification_report.sort_values(by=['f1-score'], ascending=False)
     return df_classification_report
+
+
+def create_results_df(y_test, y_pred):
+    
+    results_df = pd.DataFrame({
+        'y_test': y_test,
+        'y_pred': y_pred
+    })
+    
+    return results_df
     
