@@ -1,5 +1,16 @@
 # Mean Reversion Prediction with Brazilian Stocks Market
 
+!!! This project is under development !!!
+
+## About the study
+
+[under development]
+
+
+## How to replicate the experiments
+
+### Tensorflow models
+
 For models based on TensorFlow, follow the steps below:
 
 1. Create a virtual environment with Python 3.10.12:
