@@ -15,22 +15,28 @@ def load_dataset(asset, data_dir):
     
     return pd.concat([train_dataset, test_dataset], ignore_index=True)
 
-def prepare_data(dataset, seq_len, features_cols):
+def prepare_data(
+    dataset, 
+    seq_len, 
+    features_cols,
+    label_col
+    ):
     """Prepare training and testing data."""
     train_index = dataset[dataset.split == 'train'].index
     test_index = dataset[dataset.split == 'test'].index
 
-    dataset_values = dataset[features_cols].values
+    X = dataset[features_cols].values
+    y = dataset[label_col].values
 
     X_train, X_test, y_train, y_test = [], [], [], []
 
-    for i in range(seq_len, len(dataset_values)):
+    for i in range(seq_len, len(dataset)):
         if i in train_index: 
-            X_train.append(dataset_values[i-seq_len:i])
-            y_train.append(dataset_values[i, 0])
+            X_train.append(X[i-seq_len:i])
+            y_train.append(y[i])
         elif i in test_index:
-            X_test.append(dataset_values[i-seq_len:i])
-            y_test.append(dataset_values[i, 0])
+            X_test.append(X[i-seq_len:i])
+            y_test.append(y[i])
         else:
             raise ValueError('Value not found in index lists')
 

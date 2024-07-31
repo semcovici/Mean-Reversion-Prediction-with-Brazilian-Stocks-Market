@@ -31,6 +31,7 @@ ASSETS = ["PETR3.SA", "PRIO3.SA", "VALE3.SA", "GGBR3.SA", "ABCB4.SA", "ITUB3.SA"
 RELEVANT_COLS = ['Date', 'Close', 'Volume']
 SEQ_LEN = 60
 FEATURES_COLS = ['diff_close_mean_z_score']
+LABEL_COL = ['diff_close_mean_z_score']
 
 METRICS = [
     keras.metrics.BinaryCrossentropy(name='cross entropy'),
@@ -45,7 +46,7 @@ def main():
 
     for asset in ASSETS:
         dataset = load_dataset(asset, DATA_DIR)
-        X_train, X_test, y_train, y_test = prepare_data(dataset, SEQ_LEN, FEATURES_COLS)
+        X_train, X_test, y_train, y_test = prepare_data(dataset, SEQ_LEN, FEATURES_COLS, LABEL_COL)
         
         model = create_model_MLP((X_train.shape[1], X_train.shape[2]))
         print(model.summary())
@@ -66,7 +67,7 @@ def main():
         y_pred = list(y_pred.reshape(y_pred.shape[0]))
         results_df = create_results_df(y_test, y_pred)
         
-        results_df.to_csv(PATH_REPORTS + f'test_results/MLP_{asset.replace('.', '_')}_test_results.csv')
+        results_df.to_csv(f'test_results/MLP_with_Attention_{asset.replace(".", "_")}_features={"_".join(FEATURES_COLS)}__label={"_".join(LABEL_COL)}__sql_len={SEQ_LEN}_test_results.csv', index = False)
 
 if __name__ == "__main__":
     main()
