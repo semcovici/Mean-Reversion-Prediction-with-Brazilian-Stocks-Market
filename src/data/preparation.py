@@ -19,14 +19,30 @@ def prepare_data(
     dataset, 
     seq_len, 
     features_cols,
-    label_col
+    label_col,
+    scaling_method = None
     ):
     """Prepare training and testing data."""
     train_index = dataset[dataset.split == 'train'].index
     test_index = dataset[dataset.split == 'test'].index
-
-    X = dataset[features_cols].values
-    y = dataset[label_col].values
+    
+    if scaling_method is not None:
+        X = dataset[features_cols]
+        X_train = X[X.index.isin(train_index)]
+        X_test = X[X.index.isin(test_index)]
+        
+        scaler = scaling_method.fit(X_train)
+        X_train_scaled = pd.DataFrame(scaler.transform(X_train), columns=features_cols)
+        X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=features_cols)
+        
+        X = pd.concat([X_train_scaled, X_test_scaled]).values
+        
+        del X_train, X_test, X_train_scaled, X_test_scaled
+    
+    else:
+        X = dataset[features_cols].values
+        
+    y = dataset[[label_col]].values
 
     X_train, X_test, y_train, y_test = [], [], [], []
 
