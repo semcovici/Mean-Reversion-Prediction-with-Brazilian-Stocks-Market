@@ -44,37 +44,39 @@ seq_len_list = [1,2,3,4,5,6,7,14,21,28,35,42,49,56,63,70]
 dict_experiments = {}
 
 exp_id = 0
+
+moving_windows = [7,14,21]
+
+
 for seq_len in seq_len_list:
     
     for asset in ASSETS:
         
-        for sub_conj_feats in [
-            ['diff_close_mean_z_score'], 
-            ["Close","Volume","SMA_21","MSTD_21","Day_of_week","diff_close_mean","diff_close_mean_z_score"],
-            ["Close","Volume","diff_close_mean_z_score"],
-            ['Close'],
-            ['Close', 'Volume', 'SMA_21']
-            ]:
-            
-            
-            for label_col in ['diff_close_mean_z_score', 'meta', 'Close']:
+        for window in moving_windows:
+        
+            for sub_conj_feats in [
+                [f'diff_close_mean_z_score_{window}'], 
+                ]:
                 
-                for scaling_method in [StandardScaler(), None]:
+                
+                for label_col in [f'diff_close_mean_z_score_{window}']:
                     
-                    for algorithm in ['LSTM_with_Attention', 'MLP']:
-    
-                        exp_id +=1
+                    for scaling_method in [StandardScaler(), None]:
                         
-                        dict_experiments.update({
-                            exp_id:{
-                                "feature_cols": sub_conj_feats,
-                                "label_col": label_col,
-                                "seq_len": seq_len,
-                                'asset': asset,
-                                'scaling_method': scaling_method,
-                                'algorithm': algorithm
-                            }
-                        })
+                        for algorithm in ['LSTM_with_Attention', 'MLP']:
+        
+                            exp_id +=1
+                            
+                            dict_experiments.update({
+                                exp_id:{
+                                    "feature_cols": sub_conj_feats,
+                                    "label_col": label_col,
+                                    "seq_len": seq_len,
+                                    'asset': asset,
+                                    'scaling_method': scaling_method,
+                                    'algorithm': algorithm
+                                }
+                            })
 
 check_if_already_exists = True
 
