@@ -9,6 +9,7 @@ warnings.filterwarnings("ignore")
 import sys
 sys.path.append('src/')
 from model.evaluation import create_results_df
+from model.config import create_experiment_configs_dummy
 
 # ### Definitions
 PROCESSED_DATA_PATH = 'data/processed/' 
@@ -19,33 +20,6 @@ ASSETS = [
     "FLRY3.SA", "RADL3.SA"
 ]
 MOVING_WINDOWS = [7, 14, 21]
-
-def create_experiment_configs(assets, windows):
-    """Create a dictionary of experiment configurations."""
-    experiment_configs = {}
-    exp_id = 0
-
-    for asset in assets:
-        for window in windows:
-            exp_id += 1
-            experiment_configs[exp_id] = {
-                "feature_col": f"past_diff_close_mean_z_score_{window}",
-                "label_col": f"diff_close_mean_z_score_{window}",
-                "window": window,
-                "asset": asset,
-                "seq_len": 1
-            }
-
-            exp_id += 1
-            experiment_configs[exp_id] = {
-                "feature_col": f"past_meta_{window}",
-                "label_col": f'meta_{window}',
-                "window": window,
-                "asset": asset,
-                "seq_len": 1
-            }
-
-    return experiment_configs
 
 def process_experiment(exp_name, config):
     """Process each experiment and generate the test results."""
@@ -79,7 +53,7 @@ def process_experiment(exp_name, config):
 
 def main():
     """Main function to execute all experiments."""
-    experiment_configs = create_experiment_configs(ASSETS, MOVING_WINDOWS)
+    experiment_configs = create_experiment_configs_dummy(ASSETS, MOVING_WINDOWS)
 
     for exp_name, config in tqdm(experiment_configs.items()):
         process_experiment(exp_name, config)

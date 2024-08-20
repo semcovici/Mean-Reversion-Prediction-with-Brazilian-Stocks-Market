@@ -18,8 +18,9 @@ import sys
 sys.path.append("src/")
 from model.evaluation import create_results_df
 from model.tf_models import create_model_LSTM_with_Attention
+from model.config import create_experiment_configs_tf
 from data.preparation import load_dataset,prepare_data 
-from sklearn.preprocessing import StandardScaler
+
 
 
 # Configuration
@@ -47,36 +48,8 @@ exp_id = 0
 
 moving_windows = [7,14,21]
 
-
-for seq_len in seq_len_list:
-    
-    for asset in ASSETS:
-        
-        for window in moving_windows:
-        
-            for sub_conj_feats in [
-                [f'diff_close_mean_z_score_{window}_diff'], 
-                ]:
-                
-                
-                for label_col in [f'diff_close_mean_z_score_{window}']:
-                    
-                    for scaling_method in [StandardScaler(), None]:
-                        
-                        for algorithm in ['LSTM_with_Attention', 'MLP']:
-        
-                            exp_id +=1
                             
-                            dict_experiments.update({
-                                exp_id:{
-                                    "feature_cols": sub_conj_feats,
-                                    "label_col": label_col,
-                                    "seq_len": seq_len,
-                                    'asset': asset,
-                                    'scaling_method': scaling_method,
-                                    'algorithm': algorithm
-                                }
-                            })
+dict_experiments = create_experiment_configs_tf(ASSETS, seq_len_list, moving_windows)
 
 check_if_already_exists = True
 
