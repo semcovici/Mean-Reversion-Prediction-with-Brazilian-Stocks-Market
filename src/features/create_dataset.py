@@ -33,7 +33,9 @@ def calculate_features(data, window):
     data[f'diff_close_mean_{window}'] = data.Close - data[f'SMA_{window}']
     data[f'diff_close_mean_z_score_{window}'] = data[f'diff_close_mean_{window}'] / data[f'MSTD_{window}']
     data[f'diff_close_mean_z_score_{window}'] = data[f'diff_close_mean_z_score_{window}'].fillna(0)
+    data[f'diff_close_mean_z_score_{window}_diff'] = data[f'diff_close_mean_z_score_{window}'].diff(1)
     data[f'meta_{window}'] = data[f'diff_close_mean_z_score_{window}'].apply(int)
+    data[f'meta_{window}_diff'] = data[f'diff_close_mean_z_score_{window}']
     
     return data 
 

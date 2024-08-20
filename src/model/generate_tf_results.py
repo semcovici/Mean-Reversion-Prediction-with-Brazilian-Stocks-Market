@@ -55,7 +55,7 @@ for seq_len in seq_len_list:
         for window in moving_windows:
         
             for sub_conj_feats in [
-                [f'diff_close_mean_z_score_{window}'], 
+                [f'diff_close_mean_z_score_{window}_diff'], 
                 ]:
                 
                 
