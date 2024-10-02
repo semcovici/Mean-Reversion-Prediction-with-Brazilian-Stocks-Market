@@ -1,10 +1,7 @@
-import plotly.graph_objects as go
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 tqdm.pandas()
 from math import isnan
-import matplotlib.pyplot as plt
 
 path_data_dir = 'data/'
 list_assets = ["PETR3.SA","PRIO3.SA", "VALE3.SA", "GGBR3.SA", "ABCB4.SA", "ITUB3.SA", "FLRY3.SA", "RADL3.SA"]
@@ -33,7 +30,7 @@ def calculate_features(data, window):
     data[f'diff_close_mean_{window}'] = data.Close - data[f'SMA_{window}']
     data[f'diff_close_mean_z_score_{window}'] = data[f'diff_close_mean_{window}'] / data[f'MSTD_{window}']
     data[f'diff_close_mean_z_score_{window}'] = data[f'diff_close_mean_z_score_{window}'].fillna(0)
-    data[f'diff_close_mean_z_score_{window}_diff'] = data[f'diff_close_mean_z_score_{window}'].diff(1)
+    data[f'diff_close_mean_z_score_{window}_diff'] = data[f'diff_close_mean_z_score_{window}'].diff(1).fillna(0)
     data[f'meta_{window}'] = data[f'diff_close_mean_z_score_{window}'].apply(int)
     data[f'meta_{window}_diff'] = data[f'diff_close_mean_z_score_{window}']
     

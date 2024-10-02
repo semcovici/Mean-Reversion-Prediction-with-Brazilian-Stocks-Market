@@ -37,7 +37,7 @@ def create_experiment_configs_tf(assets, seq_len_list, moving_windows):
         for asset in assets:
             for window in moving_windows:
                 for sub_conj_feats in [[f'diff_close_mean_z_score_{window}']]:
-                    for label_col in [f'diff_close_mean_z_score_{window}']:
+                    for label_col in [f'diff_close_mean_z_score_{window}_diff']:
                         for scaling_method in [StandardScaler(), None]:
                             for algorithm in ['LSTM_with_Attention', 'MLP']:
                                 

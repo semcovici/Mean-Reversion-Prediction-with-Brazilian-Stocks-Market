@@ -40,13 +40,25 @@ ASSETS = [
     # "RADL3.SA"
     ]
 
-seq_len_list = [1,2,3,4,5,6,7,14,21,28,35,42,49,56,63,70]
+seq_len_list = [
+    # 1,
+    # 2,
+    # 3,
+    # 4,
+    # 5,
+    # 6,
+    7,14,21,28,35,42,49,56,63,70
+    ]
 
 dict_experiments = {}
 
 exp_id = 0
 
-moving_windows = [7,14,21]
+moving_windows = [
+    # 7,
+    # 14,
+    21
+    ]
 
                             
 dict_experiments = create_experiment_configs_tf(ASSETS, seq_len_list, moving_windows)

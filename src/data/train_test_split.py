@@ -1,12 +1,6 @@
-
-
-import plotly.graph_objects as go
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 tqdm.pandas()
-from math import isnan
-import matplotlib.pyplot as plt
 
 path_data_dir = 'data/'
 
@@ -25,8 +19,6 @@ from data_split import temporal_train_test_split
 
 
 
-
-
 def main():
     
     for asset in tqdm(list_assets):
@@ -38,8 +30,8 @@ def main():
         )
         
         
-        train_dataset.to_csv(path_data_dir + f"processed/train_price_history_{asset.replace('.', '_')}_meta_dataset_ffill.csv")
-        test_dataset.to_csv(path_data_dir + f"processed/test_price_history_{asset.replace('.', '_')}_meta_dataset_ffill.csv")
+        train_dataset.to_csv(path_data_dir + f"processed/train_price_history_{asset.replace('.', '_')}_meta_dataset_ffill.csv", index = False)
+        test_dataset.to_csv(path_data_dir + f"processed/test_price_history_{asset.replace('.', '_')}_meta_dataset_ffill.csv", index = False)
         
         
 if __name__ == '__main__':
