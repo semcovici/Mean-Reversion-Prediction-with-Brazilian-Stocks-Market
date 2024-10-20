@@ -34,6 +34,9 @@ def calculate_features(data, window):
     data[f'meta_{window}'] = data[f'diff_close_mean_z_score_{window}'].apply(int)
     data[f'meta_{window}_diff'] = data[f'diff_close_mean_z_score_{window}']
     
+    data[f'Close_diff'] = data[f'Close'].diff(1).fillna(0)
+    
+    
     return data 
 
 
