@@ -2,6 +2,10 @@ from keras.layers import Input, LSTM, Dense, Dropout, AdditiveAttention, Permute
 from keras.models import Sequential, Model
 from keras.layers import LSTM, Dense, Dropout, AdditiveAttention, Permute, Reshape, Multiply, BatchNormalization, Input, Flatten, Bidirectional
 import keras
+from kan import KAN
+import torch
+
+seed = 42
 
 METRICS_CLF = [
     #keras.metrics.F1Score(average='macro',name='f1_score'),
@@ -82,4 +86,21 @@ def create_model_LSTM_with_Attention(input_shape, num_classes=None):
     model = Model(inputs, outputs)
     model.compile(optimizer='adam', loss=loss, metrics=metrics)
 
+    return model
+
+def create_model_KAN(input_shape, num_classes=None):
+    """Create the KAN model."""
+    
+    # Captura o device do torch para executar o modelo
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    # Se for classificação, n neurônios de saída com softmax
+    if num_classes: # num_classes indica que é uma tarefa de classificação
+        model = KAN(width=[input_shape,40,40,num_classes], grid=3, k=3, seed=seed)
+        model.to(device)
+        
+    else: # Caso contrário, é uma tarefa de regressão
+        model = KAN(width=[input_shape,40,40,1], grid=3, k=3, seed=seed)
+        model.to(device)
+        
     return model

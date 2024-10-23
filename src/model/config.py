@@ -45,7 +45,7 @@ def create_experiment_configs_tf(assets, seq_len_list, moving_windows):
                         # StandardScaler(), 
                         None
                         ]:
-                        for algorithm in ['LSTM_with_Attention', 'MLP']:
+                        for algorithm in ['LSTM_with_Attention', 'MLP', 'KAN']:
                             
                             exp_id += 1
                             
