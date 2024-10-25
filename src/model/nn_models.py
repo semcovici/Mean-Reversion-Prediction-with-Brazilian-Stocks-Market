@@ -96,11 +96,11 @@ def create_model_KAN(input_shape, num_classes=None):
     
     # Se for classificação, n neurônios de saída com softmax
     if num_classes: # num_classes indica que é uma tarefa de classificação
-        model = KAN(width=[input_shape,40,40,num_classes], grid=3, k=3, seed=seed)
+        model = KAN(width=[input_shape,40,40,num_classes], grid=5, k=3, seed=seed)
         model.to(device)
         
     else: # Caso contrário, é uma tarefa de regressão
-        model = KAN(width=[input_shape,40,40,1], grid=3, k=3, seed=seed)
+        model = KAN(width=[input_shape,40,40,1], grid=5, k=3, seed=seed)
         model.to(device)
         
     return model

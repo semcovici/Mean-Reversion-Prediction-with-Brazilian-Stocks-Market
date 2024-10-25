@@ -14,7 +14,12 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+print(f"Is cuda available: {torch.cuda.is_available()}")
+print(device)
 
 # Function to set random seed for reproducibility
 def set_seed(seed):
@@ -253,7 +258,7 @@ Config:
             model.fit({'train_input': train_input, 'train_label': train_label,
                         'test_input': val_input, 'test_label': val_label},
                         opt="LBFGS",
-                        steps=2,
+                        steps=100,
                         loss_fn=loss_fn)
 
             y_pred = model.forward(test_input).detach()
