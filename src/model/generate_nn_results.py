@@ -18,6 +18,9 @@ from sklearn.preprocessing import LabelEncoder
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+if device != 'cuda':
+    raise ValueError('device must be cuda')
+
 print(f"Is cuda available: {torch.cuda.is_available()}")
 print(device)
 
@@ -199,18 +202,19 @@ Config:
 
             print(np.unique(y_train, return_counts=True))
 
+            if prediction_type == 'classification':
+                le = LabelEncoder()
+                le = le.fit(y_train)
+                y_train = le.transform(y_train)
+
+
             X_train_flatten, X_val_flatten, y_train, y_val = train_test_split(X_train_flatten, y_train,
                                                                                test_size=0.2,
                                                                                  random_state=seed)
                                         #stratify=y_train if prediction_type=='classification' else None)
             
 
-            if prediction_type == 'classification':
-                le = LabelEncoder()
-                le = le.fit(y_train)
-                y_train = le.transform(y_train)
-                y_val = le.transform(y_val)
-
+            
             y_dtype = torch.float if prediction_type == 'regression' else torch.long
 
             train_input = torch.from_numpy(X_train_flatten).type(torch.float32).to(device)
