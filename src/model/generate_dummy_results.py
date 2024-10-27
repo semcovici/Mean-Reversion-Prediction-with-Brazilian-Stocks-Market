@@ -36,15 +36,19 @@ def process_experiment(exp_name, config):
     for window in MOVING_WINDOWS:
         test_dataset[feature_col] = test_dataset[label_col].shift(1)
 
-    # Remove the first rows based on sequence length
-    test_dataset = test_dataset.iloc[seq_len:]
+    # fill the first rows based on sequence length
+    test_dataset.iloc[0] = test_dataset.iloc[0].fillna(0)
 
     # Prepare the results path
     path_results = f"{PATH_REPORTS}test_results/Dummy_model_{asset.replace('.', '_')}_features={feature_col}__label={label_col}_test_results.csv"
 
     # Generate predictions
     y_test = test_dataset[label_col]
-    y_pred = test_dataset[feature_col].astype(int)
+    y_pred = test_dataset[feature_col]
+    
+    # transform to int if the problem is `meta`
+    if 'meta' in feature_col:
+        y_test = y_test.astype(int)
 
     # Create and save the results dataframe
     results_df = create_results_df(y_test, y_pred)

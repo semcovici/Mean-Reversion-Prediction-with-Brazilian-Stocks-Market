@@ -18,11 +18,9 @@ from sklearn.preprocessing import LabelEncoder
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-if device != 'cuda':
-    raise ValueError('device must be cuda')
-
 print(f"Is cuda available: {torch.cuda.is_available()}")
-print(device)
+if str(device) != 'cuda':
+    raise ValueError('device must be cuda')
 
 # Function to set random seed for reproducibility
 def set_seed(seed):

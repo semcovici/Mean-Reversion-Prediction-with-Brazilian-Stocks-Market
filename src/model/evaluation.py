@@ -7,7 +7,7 @@ def get_classification_report(y_test, y_pred):
     report = classification_report(y_test, y_pred, output_dict=True)
     df_classification_report = pd.DataFrame(report).transpose()
     df_classification_report = df_classification_report.sort_values(by=['f1-score'], ascending=False)
-    return df_classification_report
+    return df_classification_report.reset_index(drop=False).rename({'index': 'class'}, axis =1 )
 
 def regression_metrics(y_test, y_pred):
     metrics = {
