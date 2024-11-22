@@ -1,26 +1,31 @@
 # https://drlee.io/advanced-stock-pattern-prediction-using-lstm-with-the-attention-mechanism-in-tensorflow-a-step-by-143a2e8b0e95
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger
-
 import os
 import tensorflow as tf
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report
 import gc
 from tensorflow.python.client import device_lib 
 import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from keras.utils import to_categorical
+
+import sys
+
+sys.path.append("src/")
+from model.evaluation import create_results_df
+from model.nn_models import create_model_LSTM_with_Attention, create_model_MLP, create_model_KAN
+from model.config import create_experiment_configs_tf
+from data.preparation import load_dataset,prepare_data 
 
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 print(f"Is cuda available: {torch.cuda.is_available()}")
-if str(device) != 'cuda':
-    raise ValueError('device must be cuda')
+# if str(device) != 'cuda':
+#     raise ValueError('device must be cuda')
 
 # Function to set random seed for reproducibility
 def set_seed(seed):
@@ -36,18 +41,6 @@ def set_seed(seed):
 # Setting seed
 seed=42
 set_seed(seed)
-
-from keras.utils import to_categorical
-
-import sys
-
-sys.path.append("src/")
-from model.evaluation import create_results_df
-from model.nn_models import create_model_LSTM_with_Attention, create_model_MLP, create_model_KAN
-from model.config import create_experiment_configs_tf
-from data.preparation import load_dataset,prepare_data 
-
-
 
 # Configuration
 DATA_DIR = 'data/'
@@ -76,20 +69,20 @@ seq_len_list = [
     7,14,21,28,35,42,49,56,63,70
     ]
 
-dict_experiments = {}
-
-exp_id = 0
-
 moving_windows = [
     7,
     14,
     21
     ]
-
+algorithms=[
+    'LSTM_with_Attention', 
+    'MLP'
+    # 'KAN'
+    ]
                             
-dict_experiments = create_experiment_configs_tf(ASSETS, seq_len_list, moving_windows)
+dict_experiments = create_experiment_configs_tf(ASSETS, seq_len_list, moving_windows, algorithms)
 
-check_if_already_exists = True
+check_if_already_exists = False
 
 def main():
    
@@ -126,14 +119,14 @@ Config:
         
         
         dataset = load_dataset(asset, DATA_DIR)
-        X_train, X_test, y_train, y_test = prepare_data(dataset, seq_len, feature_cols, label_col, scaling_method)
+        X_train, X_valid, X_test, y_train, y_valid, y_test = prepare_data(dataset, seq_len, feature_cols, label_col, scaling_method,valid=True,valid_pct=0.2)
         
         
         if prediction_type=='regression':
             
             num_classes = None
             
-            if algorithm in ['MLP', 'LSTM']:
+            if algorithm in ['MLP', 'LSTM_with_Attention']:
                 callbacks = [
                     EarlyStopping(monitor='val_r2_score', patience=10, mode='max'),
                     # ModelCheckpoint(PATH_MODELS + f'best_model_LSTM_with_Attention_{asset.replace(".", "_")}.keras', save_best_only=True, monitor='val_r2_score'),
@@ -147,12 +140,13 @@ Config:
                 # tenho que verificar se a entrada sao arrays numpy
                 pass
             
-            else: raise ValueError(f'Algoritmo errado selecionado para {prediction_type}')
+            else: raise ValueError(f'Algoritmo nao esperado - {algorithm}')
             
         elif prediction_type=='classification':
             num_classes = len(np.unique(y_train))
+
             
-            if algorithm in ['MLP, LSTM']:
+            if algorithm in ['MLP', 'LSTM_with_Attention']:
                 callbacks = [
                     EarlyStopping(monitor='val_loss', patience=10, mode = 'min'),
                     # ModelCheckpoint(PATH_MODELS + f'best_model_LSTM_with_Attention_{asset.replace(".", "_")}.keras', save_best_only=True, monitor='val_r2_score'),
@@ -163,6 +157,7 @@ Config:
 
                 # Convertendo os rótulos para one-hot encoding
                 y_train = to_categorical(y_train, num_classes=num_classes)
+                y_valid = to_categorical(y_valid, num_classes=num_classes)
                 #y_test = to_categorical(y_test, num_classes=num_classes)
                 
             elif algorithm == 'KAN':
@@ -172,7 +167,7 @@ Config:
                 # e tbm tenho que verificar se entradas sao arrays numpy
                 pass
                 
-            else: raise ValueError(f'Algoritmo errado selecionado para {prediction_type}')
+            else: raise ValueError(f'Algoritmo nao esperado - {algorithm}')
 
             
         else: raise ValueError(f'Não existe prediction_type = {prediction_type}')
@@ -237,8 +232,17 @@ Config:
         #print(model.summary())
     
     
-        if algorithm in ['MLP', 'LSTM']:
-            model.fit(X_train, y_train, epochs=1000, batch_size=64, validation_split=0.2, callbacks=callbacks)
+        if algorithm in ['MLP', 'LSTM_with_Attention']:
+            # model.fit(X_train, y_train, epochs=1000, batch_size=64, validation_split=0.2, callbacks=callbacks)
+            model.fit(
+    X_train, 
+    y_train, 
+    epochs=1000, 
+    batch_size=64, 
+    validation_data=(X_valid, y_valid), 
+    callbacks=callbacks
+)
+
 
             y_pred = model.predict(X_test)
         

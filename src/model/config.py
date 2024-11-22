@@ -28,7 +28,7 @@ def create_experiment_configs_dummy(assets, windows):
     return experiment_configs
 
 
-def create_experiment_configs_tf(assets, seq_len_list, moving_windows):
+def create_experiment_configs_tf(assets, seq_len_list, moving_windows, algorithms):
     """Cria um dicionário de configurações de experimentos."""
     experiment_configs = {}
     exp_id = 0
@@ -45,7 +45,7 @@ def create_experiment_configs_tf(assets, seq_len_list, moving_windows):
                         # StandardScaler(), 
                         None
                         ]:
-                        for algorithm in ['LSTM_with_Attention', 'MLP', 'KAN']:
+                        for algorithm in algorithms:
                             
                             exp_id += 1
                             

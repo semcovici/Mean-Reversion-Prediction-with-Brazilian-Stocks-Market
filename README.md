@@ -36,6 +36,19 @@ For models based on TensorFlow, follow the steps below:
 4. Run `generate_LSTM_results.py` and `generate_MLP_results.py`. The results will be in `reports/test_results/` and the models created will be in `models/`.
 
 
+
+
+conda create --name env-tcc-tf-gpu python=3.12.7
+conda activate env-tcc-tf-gpu
+conda install conda-forge::tensorflow
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia        
+conda install scikit-learn
+python -m pip install pykan
+conda install matplotlib
+conda install tqdm
+
+
+
 ### KAN models
 
 [under development]
