@@ -82,7 +82,7 @@ algorithms=[
                             
 dict_experiments = create_experiment_configs_tf(ASSETS, seq_len_list, moving_windows, algorithms)
 
-check_if_already_exists = False
+check_if_already_exists = True
 
 def main():
    
