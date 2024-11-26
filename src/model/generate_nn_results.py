@@ -1,4 +1,3 @@
-# https://drlee.io/advanced-stock-pattern-prediction-using-lstm-with-the-attention-mechanism-in-tensorflow-a-step-by-143a2e8b0e95
 
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, TensorBoard, CSVLogger
 import os
@@ -76,7 +75,7 @@ moving_windows = [
     ]
 algorithms=[
     'LSTM_with_Attention', 
-    'MLP'
+    # 'MLP',
     # 'KAN'
     ]
                             
@@ -119,9 +118,8 @@ Config:
         
         
         dataset = load_dataset(asset, DATA_DIR)
-        X_train, X_valid, X_test, y_train, y_valid, y_test = prepare_data(dataset, seq_len, feature_cols, label_col, scaling_method,valid=True,valid_pct=0.2)
-        
-        
+        X_train, X_valid, X_test, y_train, y_valid, y_test = prepare_data(dataset, seq_len, feature_cols, label_col, scaling_method,valid=True,valid_pct=0.1)
+    
         if prediction_type=='regression':
             
             num_classes = None
@@ -187,10 +185,12 @@ Config:
         elif algorithm == 'KAN':
 
             y_train = y_train.squeeze()
+            y_val = y_valid.squeeze()
             y_test = y_test.squeeze()
 
             # Realizando o flatten das séries de entrada
             X_train_flatten = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]*X_train.shape[2]))
+            X_val_flatten = np.reshape(X_valid, (X_valid.shape[0], X_valid.shape[1]*X_valid.shape[2]))
             X_test_flatten = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]*X_test.shape[2]))
 
             print(np.unique(y_train, return_counts=True))
@@ -198,14 +198,7 @@ Config:
             if prediction_type == 'classification':
                 le = LabelEncoder()
                 le = le.fit(y_train)
-                y_train = le.transform(y_train)
-
-
-            X_train_flatten, X_val_flatten, y_train, y_val = train_test_split(X_train_flatten, y_train,
-                                                                               test_size=0.2,
-                                                                                 random_state=seed)
-                                        #stratify=y_train if prediction_type=='classification' else None)
-            
+                y_train = le.transform(y_train)            
 
             
             y_dtype = torch.float if prediction_type == 'regression' else torch.long
