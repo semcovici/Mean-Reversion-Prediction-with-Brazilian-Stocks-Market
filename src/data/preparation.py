@@ -114,7 +114,9 @@ def prepare_data(
             raise ValueError('Value not found in index lists')
 
     X_train = np.array(X_train).transpose(0, 2, 1)
+    X_train = np.transpose(X_train, (0, 2, 1))
     X_test = np.array(X_test).transpose(0, 2, 1)
+    X_test = np.transpose(X_test, (0, 2, 1))
     y_train = np.array(y_train).reshape(-1, 1)
     y_test = np.array(y_test).reshape(-1, 1)
 

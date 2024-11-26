@@ -61,13 +61,14 @@ def create_model_MLP(input_shape, num_classes=None):
     return model
 
 
-
+# https://drlee.io/advanced-stock-pattern-prediction-using-lstm-with-the-attention-mechanism-in-tensorflow-a-step-by-143a2e8b0e95
 def create_model_LSTM_with_Attention(input_shape, num_classes=None):
-    """Create and compile the LSTM model."""
+    """Create and compile the LSTM model."""    
     inputs = Input(shape=input_shape)
+    
     x = Bidirectional(LSTM(units=50, return_sequences=True))(inputs)
     x = Bidirectional(LSTM(units=50, return_sequences=True))(x)
-    
+        
     attention = AdditiveAttention(name='attention_weight')([x, x])
     x = Multiply()([x, attention])
     x = Flatten()(x)
@@ -87,6 +88,7 @@ def create_model_LSTM_with_Attention(input_shape, num_classes=None):
     model.compile(optimizer='adam', loss=loss, metrics=metrics)
 
     return model
+
 
 def create_model_KAN(input_shape, num_classes=None):
     """Create the KAN model."""
