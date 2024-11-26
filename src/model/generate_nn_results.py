@@ -74,7 +74,7 @@ moving_windows = [
     ]
 algorithms=[
     'LSTM_with_Attention', 
-    # 'MLP',
+    'MLP'
     # 'KAN'
     ]
                             
@@ -140,7 +140,11 @@ Config:
             else: raise ValueError(f'Algoritmo nao esperado - {algorithm}')
             
         elif prediction_type=='classification':
-            num_classes = len(np.unique(y_train))
+            
+            # concatena treino e validacao para saber o conjunto de labels possiveis
+            y_train_val = np.concatenate([y_valid, y_train]).reshape(-1)
+            
+            num_classes = len(np.unique(y_train_val))
 
             
             if algorithm in ['MLP', 'LSTM_with_Attention']:
@@ -153,8 +157,6 @@ Config:
                 ]
 
                 # Convertendo os rótulos para one-hot encoding #
-                # concatena treino e validacao para saber o conjunto de labels possiveis
-                y_train_val = np.concatenate([y_valid, y_train]).reshape(-1)
                 # cria label encoder
                 le = LabelEncoder()
                 le.fit(y_train_val)
@@ -235,6 +237,11 @@ Config:
     
     
         if algorithm in ['MLP', 'LSTM_with_Attention']:
+            
+            print(y_train.shape)
+            print(y_valid.shape)
+            
+            
             # model.fit(X_train, y_train, epochs=1000, batch_size=64, validation_split=0.2, callbacks=callbacks)
             model.fit(
     X_train, 
