@@ -6,9 +6,8 @@ import numpy as np
 import gc
 from tensorflow.python.client import device_lib 
 import torch
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from keras.utils import to_categorical
+from sklearn.preprocessing import OneHotEncoder
 
 import sys
 
@@ -153,10 +152,20 @@ Config:
                     CSVLogger(PATH_MODELS + f'training_log_{algorithm}_{asset.replace(".", "_")}_features={"_".join(feature_cols)}__label={label_col}__sql_len={seq_len}_test_results.csv')
                 ]
 
-                # Convertendo os rótulos para one-hot encoding
-                y_train = to_categorical(y_train, num_classes=num_classes)
-                y_valid = to_categorical(y_valid, num_classes=num_classes)
-                #y_test = to_categorical(y_test, num_classes=num_classes)
+                # Convertendo os rótulos para one-hot encoding #
+                # concatena treino e validacao para saber o conjunto de labels possiveis
+                y_train_val = np.concatenate([y_valid, y_train]).reshape(-1)
+                # cria label encoder
+                le = LabelEncoder()
+                le.fit(y_train_val)
+                y_train_val_enc = le.transform(y_train_val)
+                #cria one
+                one = OneHotEncoder()
+                one.fit(y_train_val_enc.reshape(-1,1))
+                y_train_enc = le.transform(y_train.reshape(-1)).reshape(-1,1)
+                y_train = one.transform(y_train_enc).toarray()
+                y_valid_enc = le.transform(y_valid.reshape(-1)).reshape(-1,1)
+                y_valid = one.transform(y_valid_enc).toarray()
                 
             elif algorithm == 'KAN':
                 # preencher
@@ -290,8 +299,7 @@ Config:
             # Convertendo as previsões (y_pred) de probabilidades para rótulos de classe
             y_pred = np.argmax(y_pred, axis=1)
 
-            if algorithm == 'KAN':
-                y_pred = le.inverse_transform(y_pred)
+            y_pred = le.inverse_transform(y_pred)
 
             # Transformando os arrays em listas para criar o DataFrame de resultados
             y_test = list(y_test.reshape(-1))
