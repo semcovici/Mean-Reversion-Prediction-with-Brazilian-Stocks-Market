@@ -17,13 +17,14 @@ from model.nn_models import create_model_LSTM_with_Attention, create_model_MLP, 
 from model.config import create_experiment_configs_tf
 from data.preparation import load_dataset,prepare_data 
 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 print(f"Is cuda available: {torch.cuda.is_available()}")
-# if str(device) != 'cuda':
-#     raise ValueError('device must be cuda')
+if str(device) != 'cuda':
+	raise ValueError('device must be cuda')
 
 # Function to set random seed for reproducibility
 def set_seed(seed):
@@ -73,9 +74,9 @@ moving_windows = [
     21
     ]
 algorithms=[
-    'LSTM_with_Attention', 
-    'MLP'
-    # 'KAN'
+    #'LSTM_with_Attention', 
+    #'MLP'
+     'KAN'
     ]
                             
 dict_experiments = create_experiment_configs_tf(ASSETS, seq_len_list, moving_windows, algorithms)
@@ -207,9 +208,11 @@ Config:
             print(np.unique(y_train, return_counts=True))
 
             if prediction_type == 'classification':
+                y_train_val = np.concatenate([y_train, y_val])
                 le = LabelEncoder()
-                le = le.fit(y_train)
-                y_train = le.transform(y_train)            
+                le = le.fit(y_train_val)
+                y_train = le.transform(y_train)  
+                y_val =  le.transform(y_val)  
 
             
             y_dtype = torch.float if prediction_type == 'regression' else torch.long
@@ -272,8 +275,12 @@ Config:
             # como lidar com train_input sendo que ele é um processamento de X_train, e ademais com outros
             model.fit({'train_input': train_input, 'train_label': train_label,
                         'test_input': val_input, 'test_label': val_label},
-                        opt="LBFGS",
-                        steps=100,
+                        opt="Adam",
+                        lr=0.001,
+                        steps=150,
+						lamb=0.001,
+						lamb_l1=0.005,
+						lamb_entropy=0.002,
                         loss_fn=loss_fn)
 
             y_pred = model.forward(test_input).detach()
