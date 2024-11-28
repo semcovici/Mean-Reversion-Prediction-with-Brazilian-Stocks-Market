@@ -30,9 +30,11 @@ def process_row_contigency_table(row, data, n_prev_meta, return_only_n_prev_meta
 def create_contigency_table(
     data,
     n_prev_meta,
+    col,
     progress_bar=True,
     as_probability=False,
     return_only_n_prev_meta = False
+    
 ):
     # reset index (this code do not work without a sequential index)
     data.reset_index(drop = True, inplace=True)
@@ -48,7 +50,7 @@ def create_contigency_table(
             
     for idx, row in tqdm(data.iterrows(), total = len(data), disable=not progress_bar):
 
-        meta = row['meta']
+        meta = row[col]
         date = row['Date']
         
         if idx < n_prev_meta:
@@ -62,9 +64,9 @@ def create_contigency_table(
         
         if return_only_n_prev_meta:
             
-            new_row.update({f'Meta {- n_prev_meta}': data.loc[idx -(n_prev_meta),'meta']})
+            new_row.update({f'Meta {- n_prev_meta}': data.loc[idx -(n_prev_meta),col]})
         else:
-            new_row.update({f'Meta {-(meta + 1)}': data.loc[idx -(meta + 1),'meta'] for meta in range(n_prev_meta)})
+            new_row.update({f'Meta {-(meta + 1)}': data.loc[idx -(meta + 1),col] for meta in range(n_prev_meta)})
             
         
         df_prev_meta.loc[len(df_prev_meta)] = new_row
