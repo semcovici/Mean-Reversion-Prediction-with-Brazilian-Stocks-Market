@@ -28,6 +28,27 @@ def create_experiment_configs_dummy(assets, windows):
     return experiment_configs
 
 
+def create_experiment_configs_proba(assets, seq_len_list, windows):
+    """Create a dictionary of experiment configurations."""
+    experiment_configs = {}
+    exp_id = 0
+
+    for asset in assets:
+        for window in windows:
+            for seq_len in seq_len_list:
+                
+                exp_id += 1
+                experiment_configs[exp_id] = {
+                    "feature_col": f"meta_{window}",
+                    "label_col": f'meta_{window}',
+                    "window": window,
+                    "asset": asset,
+                    "seq_len": seq_len
+                }
+
+    return experiment_configs
+
+
 def create_experiment_configs_tf(assets, seq_len_list, moving_windows, algorithms):
     """Cria um dicionário de configurações de experimentos."""
     experiment_configs = {}

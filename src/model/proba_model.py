@@ -5,7 +5,7 @@ def get_past_meta(
     name_meta_col = "meta"
 ):
     idx = row.name
-        
+    
     list_past_meta = df.loc[idx-n_past_meta:idx - 1, name_meta_col].to_list()
     
     list_past_meta.reverse()
